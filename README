@@ -1,0 +1,33 @@
+This is a mirror of http://www.vim.org/scripts/script.php?script_id=4115
+
+DESCRIPTION
+This plugin automatically persists (parts of) certain buffers when Vim is done
+editing the buffer, regardless of whether is was saved to a file or discarded.
+In this way, this is related to the built-in persistent-undo functionality,
+but rather meant for building a history of file contents to allow browsing and
+recall, especially for things like commit messages, where Vim is invoked as
+the editor from an external tool.
+
+SEE ALSO
+This plugin is used by:
+MessageRecall (vimscript #4116): Browse and re-insert previous (commit,
+                                 status) messages.
+
+USAGE
+The plugin is completely inactive until you set it up for a particular
+buffer through the following function; you'll find the details directly in the
+.vim/autoload/BufferPersist.vim implementation file.
+
+BufferPersist#Setup( BufferStoreFuncref, ... )
+
+
+EXAMPLE
+Let's store the first three lines of each edited text file in the temp
+directory, using the text file's filename prefixed with "preview-":
+    function! BufferStore( bufNr )
+        return $TEMP . '/preview-' . fnamemodify(bufname(a:bufNr), ':t')
+    endfunction
+    autocmd BufNew,BufRead *.txt call BufferPersist#Setup(
+    \   function('BufferStore'),
+    \   {'range': '1,3'}
+    \)

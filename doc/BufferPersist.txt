@@ -1,0 +1,95 @@
+*BufferPersist.txt*     Save certain buffers somewhere when quitting them.
+
+		       BUFFER PERSIST    by Ingo Karkat
+							   *BufferPersist.vim*
+description			|BufferPersist-description|
+usage				|BufferPersist-usage|
+installation			|BufferPersist-installation|
+limitations			|BufferPersist-limitations|
+known problems			|BufferPersist-known-problems|
+todo				|BufferPersist-todo|
+history				|BufferPersist-history|
+
+==============================================================================
+DESCRIPTION					   *BufferPersist-description*
+
+This plugin automatically persists (parts of) certain buffers when Vim is done
+editing the buffer, regardless of whether is was saved to a file or discarded.
+In this way, this is related to the built-in |persistent-undo| functionality,
+but rather meant for building a history of file contents to allow browsing and
+recall, especially for things like commit messages, where Vim is invoked as
+the editor from an external tool.
+
+SEE ALSO								     *
+
+This plugin is used by:
+MessageRecall (vimscript #0000): Browse and re-insert previous (commit,
+				 status) messages.
+
+RELATED WORKS								     *
+
+==============================================================================
+USAGE							 *BufferPersist-usage*
+
+The plugin is completely inactive until you set it up for a particular
+buffer through the following function; you'll find the details directly in the
+.vim/autoload/BufferPersist.vim implementation file.
+
+BufferPersist#Setup( BufferStoreFuncref, ... )
+
+
+EXAMPLE						       *BufferPersist-example*
+
+Let's store the first three lines of each edited text file in the temp
+directory, using the text file's filename prefixed with "preview-": >
+    function! BufferStore( bufNr )
+	return $TEMP . '/preview-' . fnamemodify(bufname(a:bufNr), ':t')
+    endfunction
+    autocmd BufNew,BufRead *.txt call BufferPersist#Setup(
+    \	function('BufferStore'),
+    \	{'range': '1,3'}
+    \)
+<
+==============================================================================
+INSTALLATION					  *BufferPersist-installation*
+
+This script is packaged as a |vimball|. If you have the "gunzip" decompressor
+in your PATH, simply edit the *.vba.gz package in Vim; otherwise, decompress
+the archive first, e.g. using WinZip. Inside Vim, install by sourcing the
+vimball or via the |:UseVimball| command. >
+    vim BufferPersist.vba.gz
+    :so %
+To uninstall, use the |:RmVimball| command.
+
+DEPENDENCIES					  *BufferPersist-dependencies*
+
+- Requires Vim 7.0 or higher.
+
+==============================================================================
+LIMITATIONS					   *BufferPersist-limitations*
+
+KNOWN PROBLEMS					*BufferPersist-known-problems*
+
+TODO							  *BufferPersist-todo*
+
+- Add option to skip persisting when never modified in Vim or equal to the
+  previous stored buffer persistence (which would need to be passed in).
+
+IDEAS							 *BufferPersist-ideas*
+
+==============================================================================
+HISTORY						       *BufferPersist-history*
+
+1.00	25-Jun-2012
+First published version.
+
+0.01	09-Jun-2012
+Started development.
+
+==============================================================================
+Copyright: (C) 2012 Ingo Karkat
+The VIM LICENSE applies to this script; see |copyright|.
+
+Maintainer:	Ingo Karkat <ingo@karkat.de>
+==============================================================================
+ vim:tw=78:ts=8:ft=help:norl:
